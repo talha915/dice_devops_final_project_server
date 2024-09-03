@@ -1,45 +1,48 @@
+from fastapi import FastAPI, File, UploadFile, HTTPException
 import os
 import hashlib
-import random, string
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+from fastapi.responses import JSONResponse, FileResponse
 
 app = FastAPI()
 
-data_dir = "/serverdata"
-file_path = os.path.join(data_dir, "random_data.txt")
+item_list = []
 
+@app.get("/")
+def read_root():
+    return {"message": "Hello, FastAPI"}
 
-def generate_random_text(size=1024):
-    """Generate random text of specified size."""
-    return "".join(random.choices(string.ascii_letters + string.digits, k=size))
+class Item(BaseModel):
+    id: int
+    name: str
+    description: str
+    price: float
+    tax: float    
 
+@app.post("/items/")
+def create_item(item: Item):
+    item_list.append(item.dict())
+    return item.dict()
 
-def create_random_file():
-    """Create a file with random content."""
-    os.makedirs(data_dir, exist_ok=True)  # Ensure directory is created
-    with open(file_path, "w") as f:
-        f.write(generate_random_text())
+@app.get("/items/{item_id}")
+def search_item(item_id: int):
+    searched_items = [item for item in item_list if item.get('id')==item_id]
+    searched_items = searched_items if len(searched_items) > 0 else 'Not found'
+    return {"result": searched_items}
 
 
 @app.get("/generate_file")
 async def generate_file():
-    try:
-        # Create the file with random content
-        create_random_file()
+    # Read the content of the existing file
+    file_path = "./app/random_text_file.txt"
+    with open(file_path, "r") as existing_file:
+        file_content = existing_file.read()
 
-        # Read the content of the file
-        with open(file_path, "r") as existing_file:
-            file_content = existing_file.read()
+    # Calculate checksum
+    checksum = hashlib.sha256(file_content.encode()).hexdigest()
 
-        # Calculate checksum
-        checksum = hashlib.sha256(file_content.encode()).hexdigest()
-
-        # Return the file with checksum in headers
-        return FileResponse(
-            path=file_path, filename="random_data.txt", headers={"checksum": checksum}
-        )
-    except Exception as e:
-        # Log the exception and return a 500 error
-        print(f"Error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))  # Return the actual error
+    # Return JSON response with status code 200
+    response_data = {"checksum": checksum, "content": file_content}
+    # return JSONResponse(content=response_data, status_code=200)
+    return FileResponse(path=file_path, filename="random_text_file.txt", headers={"checksum": checksum})

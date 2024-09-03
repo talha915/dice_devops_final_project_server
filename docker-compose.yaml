@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - servervol:/serverdata
+    networks:
+      - my_network
+    ports:
+      - "8000:8000"
+
+volumes:
+  servervol:
+
+networks:
+  my_network:
+    external: true

@@ -1,1 +1,1 @@
-# dice_devops_final_project_server
+# final_project_devops_server_dice_camp

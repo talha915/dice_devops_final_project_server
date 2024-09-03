@@ -1,20 +1,18 @@
-# Use the official Python image as the base image
-FROM python:3.11-slim
+FROM python:3.9-slim
 
-# Set the working directory in the container
-WORKDIR /app
+VOLUME /serverdata
 
-# Copy the requirements file into the container
+WORKDIR /serverdata
+
 COPY requirements.txt .
 
-# Install any dependencies
+COPY app /serverdata/app
+COPY app/random_text_file.txt /serverdata/app/random_text_file.txt
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project into the container
-COPY . .
+RUN mkdir -p /serverdata && chmod 777 /serverdata
 
-# Expose the port FastAPI will run on
 EXPOSE 8000
 
-# Command to run the FastAPI server
 CMD ["uvicorn", "app.index:app", "--host", "0.0.0.0", "--port", "8000"]
