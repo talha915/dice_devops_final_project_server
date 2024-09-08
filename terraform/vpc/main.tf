@@ -1,4 +1,8 @@
-# Create a VPC
+provider "aws" {
+  region = "eu-central-1"  # AWS region
+}
+
+# Create VPC
 resource "aws_vpc" "main_vpc" {
   cidr_block = var.vpc_cidr
   tags = {
@@ -6,7 +10,7 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 
-# Create a subnet for the server
+# Create Server Subnet
 resource "aws_subnet" "server_subnet" {
   vpc_id     = aws_vpc.main_vpc.id
   cidr_block = var.server_subnet_cidr
@@ -15,7 +19,7 @@ resource "aws_subnet" "server_subnet" {
   }
 }
 
-# Create a subnet for the client
+# Create Client Subnet
 resource "aws_subnet" "client_subnet" {
   vpc_id     = aws_vpc.main_vpc.id
   cidr_block = var.client_subnet_cidr
@@ -24,11 +28,10 @@ resource "aws_subnet" "client_subnet" {
   }
 }
 
-# Create a security group for communication between instances
+# Create Security Group
 resource "aws_security_group" "allow_communication" {
   vpc_id = aws_vpc.main_vpc.id
 
-  # Allow SSH
   ingress {
     from_port   = 22
     to_port     = 22
@@ -36,7 +39,6 @@ resource "aws_security_group" "allow_communication" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Allow HTTP for FastAPI
   ingress {
     from_port   = 8000
     to_port     = 8000
@@ -54,4 +56,21 @@ resource "aws_security_group" "allow_communication" {
   tags = {
     Name = "allow-communication"
   }
+}
+
+# Outputs
+output "vpc_id" {
+  value = aws_vpc.main_vpc.id
+}
+
+output "server_subnet_id" {
+  value = aws_subnet.server_subnet.id
+}
+
+output "client_subnet_id" {
+  value = aws_subnet.client_subnet.id
+}
+
+output "sg_id" {
+  value = aws_security_group.allow_communication.id
 }
