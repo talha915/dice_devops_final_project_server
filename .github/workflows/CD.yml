@@ -40,6 +40,13 @@ jobs:
         working-directory: terraform/server
         run: terraform apply -auto-approve
 
+      - name: Debug Terraform Output
+        run: |
+          # Retrieve the public IP address of the EC2 instance from the Terraform output
+          terraform output -json
+          echo "Raw Terraform Output:"
+          terraform output -raw instance_public_ip  
+
       - name: Get EC2 Instance Public IP
         id: ec2
         run: |
