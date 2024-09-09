@@ -47,7 +47,7 @@ jobs:
           echo "Raw Terraform Output:"
           terraform output -raw instance_public_ip
 
-           - name: Get EC2 Instance Public IP
+      - name: Get EC2 Instance Public IP
         id: ec2
         working-directory: terraform/server
         run: |
