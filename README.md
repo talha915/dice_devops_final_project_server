@@ -53,5 +53,3 @@ GitHub Actions will automatically handle the CI/CD pipeline. The configuration i
 
 # Conclusion
 This project showcases a complete workflow from infrastructure provisioning using Terraform to application deployment with Docker, all managed through GitHub Actions for CI/CD.
-
-For any further information or assistance, please refer to the individual sections of the repository or contact the project maintainer.
