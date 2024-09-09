@@ -1,5 +1,5 @@
 # Project Overview
-This project demonstrates how to set up a server infrastructure using Terraform, deploy a Dockerized Python Flask application, and manage CI/CD workflows with GitHub Actions.
+This project demonstrates how to set up a server infrastructure using Terraform, deploy a Dockerized Python Fast application, and manage CI/CD workflows with GitHub Actions.
 
 # Project Components
 1. Terraform: Used to define and create AWS infrastructure including EC2 instances, VPCs, and state management with S3 and DynamoDB.
@@ -22,7 +22,7 @@ Terraform files are located in the terraform/server directory. The setup involve
 
 # Application Deployment with Docker
 ## Description
-The server application is developed in Python using Flask and is containerized using Docker. This approach ensures a consistent runtime environment and simplifies deployment.
+The server application is developed in Python using Fast and is containerized using Docker. This approach ensures a consistent runtime environment and simplifies deployment.
 
 # Docker Setup
 - Dockerfile: Defines the image used to build the server container.
@@ -36,6 +36,7 @@ GitHub Actions is used to automate the CI/CD process. The workflow is defined in
 - Deploy Docker Container: Build and run the Docker container based on the latest code.
 
 # Workflow
+
 ## Terraform Actions:
 
 - Initialize the Terraform configuration.
