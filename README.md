@@ -1,55 +1,73 @@
 # Project Overview
-This project demonstrates how to set up a server infrastructure using Terraform, deploy a Dockerized Python Fast application, and manage CI/CD workflows with GitHub Actions.
 
-# Project Components
-1. Terraform: Used to define and create AWS infrastructure including EC2 instances, VPCs, and state management with S3 and DynamoDB.
-2. Docker: Utilized to containerize the Python Flask application for consistent deployment.
-3. GitHub Actions: Configured to automate the CI/CD pipeline, handling the deployment of infrastructure and application updates.
+This repository contains the setup and deployment instructions for a server-client application using Docker, Docker Compose, AWS EC2, and Terraform.
 
-# Infrastructure Setup with Terraform
-Description
-- EC2 Instance: Provisioned to host the server application.
-- VPC: Configured to enable secure communication between the server and client EC2 instances.
-- S3 Bucket: Used to lock the Terraform state files for consistency.
-- DynamoDB Table: Provides locking for Terraform state to prevent concurrent modifications.
+## Base Image and Dockerfile
 
-# Configuration
-Terraform files are located in the terraform/server directory. The setup involves defining resources such as EC2 instances, VPCs, and state management mechanisms.
+1. **Choose a Base Image:**
+   - Selected an appropriate base image from the [Official Docker Images list](https://hub.docker.com/search?q=&type=image).
 
-## Key Terraform Commands
-- terraform init: Initializes the Terraform configuration.
-- terraform apply -auto-approve: Applies the configuration to create the infrastructure.
+2. **Create Dockerfile for Server Container:**
+   - Created a `Dockerfile` for the server container with the following specifications:
+     - Used a volume named `servervol` and mounted it at `/serverdata` in the container.
+     - Installed necessary packages and dependencies required for the server application.
+     - Written a server application using FastAPI which:
+       - Creates a 1KB file with random text data in the `/serverdata` directory.
+       - Sends the file and its checksum to the client.
 
-# Application Deployment with Docker
-## Description
-The server application is developed in Python using Fast and is containerized using Docker. This approach ensures a consistent runtime environment and simplifies deployment.
+3. **Docker Compose for Server Container:**
+   - Defined and ran the server container using Docker Compose.
 
-# Docker Setup
-- Dockerfile: Defines the image used to build the server container.
-- Docker Compose: Used to define and manage multi-container Docker applications (if applicable).
+4. **Docker Compose for Client Container:**
+   - Created a Docker Compose configuration for the client container which:
+     - Saves the received file in the `/clientdata` directory.
+     - Verifies the file's integrity by checking the received checksum.
 
-# CI/CD with GitHub Actions
-## Description
-GitHub Actions is used to automate the CI/CD process. The workflow is defined in .github/workflows/ci-cd.yml and includes steps to:
-- Set up Terraform: Initialize and apply the Terraform configuration to create/update infrastructure.
-- Fetch Terraform Outputs: Retrieve outputs like the public IP of the EC2 instance.
-- Deploy Docker Container: Build and run the Docker container based on the latest code.
+## AWS EC2 Instances
 
-# Workflow
+1. **Create EC2 Instances:**
+   - Created two AWS EC2 instances (VMs):
+     - One for hosting the server container.
+     - Another for hosting the client container.
+   - Used the `t2.micro` instance type, which is covered under the AWS free tier.
 
-## Terraform Actions:
+2. **Configure Networking:**
+   - Configured the VPC and subnets to allow communication between the two EC2 instances.
 
-- Initialize the Terraform configuration.
-- Apply changes to create or update infrastructure.
-- Fetch the output values such as the public IP address.
+3. **Terraform Automation:**
+   - Used Terraform for infrastructure automation to create and manage the EC2 instances and networking configuration.
 
-# Docker Actions:
-- Build Docker images.
-- Deploy the Docker container with the updated application code.
+## CI/CD Pipelines
 
-# CI/CD Pipeline:
+1. **Git Repositories:**
+   - Created two separate Git repositories for the server and client codebases.
 
-GitHub Actions will automatically handle the CI/CD pipeline. The configuration is located in .github/workflows/ci-cd.yml. Ensure that your GitHub repository is set up with the appropriate secrets and permissions for AWS and Docker.
+2. **CI/CD Pipelines Setup:**
+   - Set up CI/CD pipelines for both repositories:
+     - Pushed Docker images to a public registry (Docker Hub).
+     - Configured the corresponding VMs as private Git runners.
+     - Updated the image tag in Docker Compose, pulled the new image, and deployed it as part of the Continuous Deployment (CD) process.
 
-# Conclusion
-This project showcases a complete workflow from infrastructure provisioning using Terraform to application deployment with Docker, all managed through GitHub Actions for CI/CD.
+3. **Email Notifications:**
+   - Integrated email notifications for build and deployment statuses.
+
+## Requirements
+
+1. **Server Application:**
+   - The server application is developed using FastAPI and requires the following dependencies:
+     - Listed in `requirements.txt`.
+
+2. **Installation and Setup:**
+   - Follow the instructions in the respective repository for detailed setup and installation steps.
+
+## Usage
+
+- To run the server and client containers, use Docker Compose commands as defined in the `docker-compose.yml` files.
+- Ensure that AWS EC2 instances are properly configured and can communicate with each other.
+- Check the CI/CD pipeline logs for build and deployment statuses.
+
+## Notes
+
+- Ensure that your AWS credentials and Terraform configuration are set up correctly for seamless infrastructure provisioning.
+- Update the Docker images in the registry as needed and reflect changes in the Docker Compose configurations.
+
