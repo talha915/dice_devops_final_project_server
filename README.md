@@ -36,6 +36,9 @@ This repository contains the setup and deployment instructions for a server-clie
 
 3. **Terraform Automation:**
    - Used Terraform for infrastructure automation to create and manage the EC2 instances and networking configuration.
+   - Configured Terraform state file locking to prevent concurrent modifications:
+     - **S3 Bucket**: Used an S3 bucket to store the Terraform state file.
+     - **DynamoDB Table**: Used a DynamoDB table for state locking and concurrency control.
 
 ## CI/CD Pipelines
 
@@ -69,5 +72,5 @@ This repository contains the setup and deployment instructions for a server-clie
 ## Notes
 
 - Ensure that your AWS credentials and Terraform configuration are set up correctly for seamless infrastructure provisioning.
+- The S3 bucket and DynamoDB table for Terraform state locking need to be correctly configured. Update the Terraform backend configuration as necessary.
 - Update the Docker images in the registry as needed and reflect changes in the Docker Compose configurations.
-
