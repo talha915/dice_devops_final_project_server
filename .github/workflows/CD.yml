@@ -51,8 +51,8 @@ jobs:
         id: ec2
         working-directory: terraform/server
         run: |
-          # Fetch the public IP from Terraform output
-          instance_ip=$(terraform output -json instance_public_ip | jq -r '.value')
+          # Fetch the public IP from Terraform output using awk
+          instance_ip=$(terraform output -raw instance_public_ip | awk '{print $1}')
           if [ -z "$instance_ip" ]; then
             echo "Failed to retrieve instance IP"
             exit 1
