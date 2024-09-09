@@ -10,6 +10,7 @@ services:
       - my_network
     ports:
       - "8000:8000"
+    image: dice_devops_final_server  
 
 volumes:
   servervol:
