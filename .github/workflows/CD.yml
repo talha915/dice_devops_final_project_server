@@ -44,9 +44,16 @@ jobs:
         id: ec2
         working-directory: terraform/server
         run: |
+          # Install jq if not already installed
+          sudo apt-get install -y jq
+
+          # Print the raw Terraform output for debugging
+          terraform output -json
+
           # Retrieve the public IP address of the EC2 instance from the Terraform output
           instance_ip=$(terraform output -json | jq -r '.instance_public_ip.value')
           echo "EC2_PUBLIC_IP=${instance_ip}" >> $GITHUB_ENV
+
 
       - name: Configure and Run Docker on EC2 Instance
         env:
