@@ -41,17 +41,17 @@ jobs:
         run: terraform apply -auto-approve
 
       - name: Debug Terraform Output
+        working-directory: terraform/server
         run: |
-          # Retrieve the public IP address of the EC2 instance from the Terraform output
           terraform output -json
           echo "Raw Terraform Output:"
-          terraform output -raw instance_public_ip  
+          terraform output -raw instance_public_ip
 
       - name: Get EC2 Instance Public IP
         id: ec2
+        working-directory: terraform/server
         run: |
-          # Retrieve the public IP address of the EC2 instance from the Terraform output
-          instance_ip=$(terraform output -json instance_public_ip | jq -r .value)
+          instance_ip=$(terraform output -raw instance_public_ip)
           echo "EC2_PUBLIC_IP=${instance_ip}" >> $GITHUB_ENV
 
 
