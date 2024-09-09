@@ -47,15 +47,17 @@ jobs:
           echo "Raw Terraform Output:"
           terraform output -raw instance_public_ip
 
-      - name: Get EC2 Instance Public IP
+           - name: Get EC2 Instance Public IP
         id: ec2
         working-directory: terraform/server
         run: |
-          instance_ip=$(terraform output -raw instance_public_ip)
+          # Fetch the public IP from Terraform output
+          instance_ip=$(terraform output -json instance_public_ip | jq -r '.value')
           if [ -z "$instance_ip" ]; then
             echo "Failed to retrieve instance IP"
             exit 1
           fi
+          # Set the environment variable
           echo "EC2_PUBLIC_IP=${instance_ip}" >> $GITHUB_ENV
 
       - name: Debug Environment Variable
