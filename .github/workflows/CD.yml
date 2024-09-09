@@ -51,14 +51,15 @@ jobs:
         id: ec2
         working-directory: terraform/server
         run: |
-          # Extract and clean the IP address
-          instance_ip=$(terraform output -raw instance_public_ip | awk -F'::debug::' '{print $1}')
+          instance_ip=$(terraform output -raw instance_public_ip)
           if [ -z "$instance_ip" ]; then
             echo "Failed to retrieve instance IP"
             exit 1
           fi
-          # Set the environment variable
           echo "EC2_PUBLIC_IP=${instance_ip}" >> $GITHUB_ENV
+
+      - name: Debug Environment Variable
+        run: echo "EC2_PUBLIC_IP=${{ env.EC2_PUBLIC_IP }}"
 
 
 
