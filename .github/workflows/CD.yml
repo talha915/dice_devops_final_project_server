@@ -51,7 +51,14 @@ jobs:
         id: ec2
         working-directory: terraform/server
         run: |
-          instance_ip=$(terraform output -raw instance_public_ip)
+          echo "Fetching Terraform Outputs"
+          terraform output -json
+          echo "Raw Terraform Output:"
+          instance_ip=$(terraform output -raw instance_public_ip 2>/dev/null)
+          if [ -z "$instance_ip" ]; then
+            echo "Failed to retrieve instance IP"
+            exit 1
+          fi
           echo "EC2_PUBLIC_IP=${instance_ip}" >> $GITHUB_ENV
 
 
