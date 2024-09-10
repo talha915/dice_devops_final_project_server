@@ -40,6 +40,17 @@ This repository contains the setup and deployment instructions for a server-clie
      - **S3 Bucket**: Used an S3 bucket to store the Terraform state file.
      - **DynamoDB Table**: Used a DynamoDB table for state locking and concurrency control.
 
+4. **Monitoring Stack Setup:**
+   - A monitoring stack, including Grafana, has been set up on each virtual machine (VM).
+   - The Grafana dashboard is configured to be accessible on port 3020 of each VM.
+   - If using EC2 instances, the Grafana dashboard is accessible over the internet via port 3020.
+
+   **Instructions for accessing Grafana:**
+
+   - Open a web browser and navigate to http://<VM-IP>:3020.
+Use the provided credentials to log in and view the dashboard.
+
+
 ## CI/CD Pipelines
 
 1. **Git Repositories:**
